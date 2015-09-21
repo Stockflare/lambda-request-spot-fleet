@@ -1,0 +1,17 @@
+{
+  "name": "lambda-request-spot-fleet",
+  "description": "Lambda backed AWS Cloudformation custom resource for EC2 RequestSpotFleet",
+  "version": "0.0.2",
+  "private": "true",
+  "dependencies": {
+    "aws-sdk": "2.1.39"
+  },
+  "devDependencies": {
+    "grunt": "0.4.*",
+    "grunt-pack": "0.1.*",
+    "grunt-aws-lambda": "0.7.*",
+    "npm": "^2.2.0"
+  },
+  "bundledDependencies": [
+  ]
+}
