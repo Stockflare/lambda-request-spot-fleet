@@ -1,13 +1,26 @@
 {
   "RequestType": "Create",
   "RequestId": "123456",
-  "ResponseURL": "pre-signed-url-for-create-response",
-  "ResourceType": "Custom::KeyPair",
+  "ResponseURL": "DEVELOPMENT",
+  "ResourceType": "Custom::SpotFleet",
   "LogicalResourceId": "123456",
   "StackId": "arn:aws:cloudformation:us-east-1:namespace:stack/stack-name/guid",
   "ResourceProperties": {
-    "KeyName" : "1234-test",
-    "Bucket" : "stocktio.com-staging-keys",
-    "Region" : "us-east-1"
+    "Region" : "us-east-1",
+    "Fleet": {
+      "SpotPrice": "0.02",
+      "TargetCapacity": "2",
+      "IamFleetRole": "arn:aws:iam::318741577598:role/terminate-spot-instances",
+      "LaunchSpecifications" : [
+        {
+          "ImageId": "ami-8da458e6",
+          "SecurityGroups": [{ "GroupId": "sg-28d64b4f" }],
+          "InstanceType": "m4.large",
+          "SubnetId": "subnet-44e6d86c",
+          "IamInstanceProfile": { "Arn" : "arn:aws:iam::318741577598:instance-profile/coreos-InstanceProfile-1NSMIB6FOS292" },
+          "UserData" : "IyEvYmluL2Jhc2gNCmVjaG8gRUNTX0NMVVNURVI9c3RvY2tmbGFyZSA+PiAvZXRjL2Vjcy9lY3MuY29uZmlnDQpzdGFydCBlY3M="
+        }
+      ]
+    }
   }
 }

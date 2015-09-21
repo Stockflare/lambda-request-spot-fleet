@@ -1,13 +1,12 @@
 {
   "RequestType": "Delete",
   "RequestId": "123456",
-  "ResponseURL": "pre-signed-url-for-create-response",
-  "ResourceType": "Custom::KeyPair",
+  "ResponseURL": "DEVELOPMENT",
+  "ResourceType": "Custom::SpotFleet",
   "LogicalResourceId": "123456",
+  "PhysicalResourceId": "sfr-0cc0f05b-7f4e-4ef8-ac21-6f766ee1f763",
   "StackId": "arn:aws:cloudformation:us-east-1:namespace:stack/stack-name/guid",
   "ResourceProperties": {
-    "KeyName" : "1234-test",
-    "Bucket" : "stocktio.com-staging-keys",
     "Region" : "us-east-1"
   }
 }

@@ -11,21 +11,67 @@ At Stockflare, we use hundreds of configurations to maintain the state of our EC
 The following example describes this functions usage within a Cloudformation. Here, we're using it to launch an ECS Cluster running on Spot Instances.
 
 ```
+
+"IamFleetRole" : {
+  "Type": "AWS::IAM::Role",
+  "Properties": {
+    "AssumeRolePolicyDocument": {
+      "Version" : "2012-10-17",
+      "Statement": [{
+        "Effect": "Allow",
+        "Principal": {
+          "Service": [ "spotfleet.amazonaws.com" ]
+        },
+        "Action": [ "sts:AssumeRole" ]
+      }]
+    },
+    "Path": "/",
+    "Policies": [
+      {
+        "PolicyName": "EC2SpotPermissionAndPassRole",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                 "ec2:DescribeImages",
+                 "ec2:DescribeSubnets",
+                 "ec2:RequestSpotInstances",
+                 "ec2:TerminateInstances"
+              ],
+              "Resource": ["*"]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                 "iam:PassRole"
+              ],
+              "Resource": ["*"]
+            }
+          ]
+        }
+      }
+    ]
+  }
+},
+
 "SpotFleet": {
   "Type": "Custom::SpotFleet",
   "Properties": {
     "ServiceToken": { "Ref" : "SpotFleetArn" },
+    "Region" : { "Ref" : "AWS::Region" },
     "Fleet": {
-      "SpotPrice": "2.80",
+      "SpotPrice": "0.02",
       "TargetCapacity": "5",
       "IamFleetRole": {"Fn::GetAtt" : ["IamFleetRole", "Arn"] },
       "LaunchSpecifications" : [
         {
           "ImageId": { "Ref" : "ImageId" },
           "SecurityGroups": [{ "GroupId": "sg-223b284e" }],
-          "InstanceType": "m3.medium",
+          "InstanceType": "m4.large",
           "SubnetId": { "Fn::GetAtt" : ["Network", "PrivateSubnetA" ] },
-          "IamInstanceProfile": { "Fn::GetAtt" : ["InstanceProfile", "Arn"] },
+          "IamInstanceProfile": { "Arn" : { "Fn::GetAtt" : ["InstanceProfile", "Arn"] } },
           "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
             "#!/bin/bash\n",
             "echo ECS_CLUSTER=", { "Ref" : "ECSCluster" }, " >> /etc/ecs/ecs.config\n",
@@ -39,3 +85,17 @@ The following example describes this functions usage within a Cloudformation. He
 ```
 
 **Note:** In-order to reduce the size of the example, some of the properties are being referenced from elsewhere...
+
+### Reference
+
+The `Fleet` object key is passed directly into the RequestSpotFleet call. The structure of this call can be found here:
+
+http://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotFleet.html
+
+### Troubleshooting
+
+If the resource builds successfully, but you're not seeing any "Spot Requests" on the EC2 Console, grab the `PhysicalResourceId` that the resource has created and run the following command:
+
+```
+$ aws ec2 describe-spot-fleet-request-history --spot-fleet-request-id <PhysicalResourceId>
+```

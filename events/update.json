@@ -1,7 +1,7 @@
 {
   "RequestType": "Update",
   "RequestId": "123456",
-  "ResponseURL": "pre-signed-url-for-create-response",
+  "ResponseURL": "DEVELOPMENT",
   "ResourceType": "Custom::KeyPair",
   "LogicalResourceId": "123456",
   "StackId": "arn:aws:cloudformation:us-east-1:namespace:stack/stack-name/guid",
