@@ -45,7 +45,7 @@ exports.handler = function (event, context) {
                   cfn.response(event, context, cfn.FAILED, { Reason: err.stack });
                 } else {
                   // retrieve ID for RequestSpotFleet request.
-                  var id = data.spotFleetRequestId;
+                  var id = data.SpotFleetRequestId;
                   // set PhysicalResourceId to the ID of the Spot Fleet request
                   cfn.response(event, context, cfn.SUCCESS, { PhysicalResourceId: id });
                 }
