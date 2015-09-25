@@ -4,7 +4,7 @@
   "ResponseURL": "DEVELOPMENT",
   "ResourceType": "Custom::SpotFleet",
   "LogicalResourceId": "123456",
-  "PhysicalResourceId": "sfr-0cc0f05b-7f4e-4ef8-ac21-6f766ee1f763",
+  "PhysicalResourceId": "sfr-2b8b8d67-a701-463f-9f35-5573e1d7890a",
   "StackId": "arn:aws:cloudformation:us-east-1:namespace:stack/stack-name/guid",
   "ResourceProperties": {
     "Region" : "us-east-1"

@@ -5,16 +5,28 @@ exports.handler = function (event, context) {
   try {
     // retrieve all request properties
     var properties = event.ResourceProperties;
-    // grab properties for the fleet definition
+    // grab properties
     var fleet = properties.Fleet;
+    var shared = properties.Shared;
+    var variants = properties.Variants;
     // retrieve ID of existing RequestSpotFleet (if one exists..)
     var physicalResourceId = event.PhysicalResourceId;
 
+    // init libraries
     var aws = require("aws-sdk");
     var cfn = require("./cfn");
     // create EC2 object using Region defined in Properties
     // TODO: Can region be obtained elsewhere?
     var ec2 = new aws.EC2({ region: properties.Region });
+
+    // inject shared properties into variants (where missing)
+    for(var i in variants) for(var attrname in shared) {
+      var obj = variants[i][attrname];
+      if( ! obj) variants[i][attrname] = obj[attrname];
+    }
+
+    // set launch specifications
+    fleet.LaunchSpecifications = variants;
 
     // switch statement for request type
     switch(event.RequestType) {
@@ -27,35 +39,27 @@ exports.handler = function (event, context) {
         });
         break;
       case "Update":
-        // retrieve properties for old fleet definition
-        var oldFleet = event.OldResourceProperties.Fleet;
-        // json stringify and compare both fleet definitions
-        if(JSON.stringify(oldFleet) != JSON.stringify(fleet)) {
-          // delete existing spot fleet request
-          spot.delete(ec2, physicalResourceId, function(err, data) {
+      // delete existing spot fleet request
+      spot.delete(ec2, physicalResourceId, function(err, data) {
+        if(err) {
+          // error occurred, log and FAIL
+          console.log(err, err.stack);
+          cfn.response(event, context, cfn.FAILED, { Reason: err.stack });
+        } else {
+          // no error, old RequestSpotFleet cancelled, create new one
+          spot.create(ec2, fleet, function(err, data) {
             if(err) {
-              // error occurred, log and FAIL
-              console.log(err, err.stack);
+              // error occurred, log and fail
               cfn.response(event, context, cfn.FAILED, { Reason: err.stack });
             } else {
-              // no error, old RequestSpotFleet cancelled, create new one
-              spot.create(ec2, fleet, function(err, data) {
-                if(err) {
-                  // error occurred, log and fail
-                  cfn.response(event, context, cfn.FAILED, { Reason: err.stack });
-                } else {
-                  // retrieve ID for RequestSpotFleet request.
-                  var id = data.SpotFleetRequestId;
-                  // set PhysicalResourceId to the ID of the Spot Fleet request
-                  cfn.response(event, context, cfn.SUCCESS, { PhysicalResourceId: id });
-                }
-              });
+              // retrieve ID for RequestSpotFleet request.
+              var id = data.SpotFleetRequestId;
+              // set PhysicalResourceId to the ID of the Spot Fleet request
+              cfn.response(event, context, cfn.SUCCESS, { PhysicalResourceId: id });
             }
           });
-        } else {
-          // no change necessary - send SUCCESS (both fleet definitions are the same)
-          cfn.response(event, context, cfn.SUCCESS, {});
         }
+      });
         break;
       case "Create":
         // create RequestSpotFleet using Fleet definition
