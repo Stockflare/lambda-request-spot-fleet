@@ -86,21 +86,7 @@ The following example describes this functions usage within a Cloudformation. He
     "Fleet": {
       "SpotPrice": "0.02",
       "TargetCapacity": "5",
-      "IamFleetRole": {"Fn::GetAtt" : ["IamFleetRole", "Arn"] },
-      "LaunchSpecifications" : [
-        {
-          "ImageId": { "Ref" : "ImageId" },
-          "SecurityGroups": [{ "GroupId": "sg-223b284e" }],
-          "InstanceType": "m4.large",
-          "SubnetId": { "Fn::GetAtt" : ["Network", "PrivateSubnetA" ] },
-          "IamInstanceProfile": { "Arn" : { "Fn::GetAtt" : ["InstanceProfile", "Arn"] } },
-          "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
-            "#!/bin/bash\n",
-            "echo ECS_CLUSTER=", { "Ref" : "ECSCluster" }, " >> /etc/ecs/ecs.config\n",
-            "start ecs"
-          ]]}}
-        }
-      ]
+      "IamFleetRole": {"Fn::GetAtt" : ["IamFleetRole", "Arn"] }
     }
   }
 },
