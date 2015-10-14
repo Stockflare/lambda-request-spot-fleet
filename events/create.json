@@ -22,7 +22,7 @@
     "Fleet": {
       "SpotPrice": "0.02",
       "TargetCapacity": "2",
-      "IamFleetRole": "arn:aws:iam::318741577598:role/terminate-spot-instances",
+      "IamFleetRole": "arn:aws:iam::318741577598:role/terminate-spot-instances"
     }
   }
 }

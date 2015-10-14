@@ -1,7 +1,7 @@
 {
   "name": "lambda-request-spot-fleet",
   "description": "Lambda backed AWS Cloudformation custom resource for EC2 RequestSpotFleet",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "private": "true",
   "dependencies": {
     "aws-sdk": "2.1.39"

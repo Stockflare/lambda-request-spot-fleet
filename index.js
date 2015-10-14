@@ -22,7 +22,7 @@ exports.handler = function (event, context) {
     // inject shared properties into variants (where missing)
     for(var i in variants) for(var attrname in shared) {
       var obj = variants[i][attrname];
-      if( ! obj) variants[i][attrname] = obj[attrname];
+      if( ! obj) variants[i][attrname] = shared[attrname];
     }
 
     // set launch specifications
