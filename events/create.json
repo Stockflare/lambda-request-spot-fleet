@@ -17,6 +17,9 @@
     "Variants" : [
       {
         "SubnetId": "subnet-44e6d86c"
+      },
+      {
+        "SubnetId": "subnet-44e6d86c"
       }
     ],
     "Fleet": {
